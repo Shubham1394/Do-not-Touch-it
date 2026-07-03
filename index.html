@@ -18,23 +18,41 @@
             overflow: hidden;
             text-align: center;
         }
+        
+        /* The Message Box Animation */
         #message-box {
             opacity: 0;
-            transform: scale(0.5);
-            transition: all 1.5s ease-in-out;
+            transform: scale(0.3) translateY(50px); /* Starts small and slightly lower */
+            transition: all 2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth, elegant pop-in effect */
             z-index: 10;
-            padding: 20px;
+            padding: 30px;
+            max-width: 90%;
         }
+        
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #ff4d6d;
             text-shadow: 0 0 20px rgba(255, 77, 109, 0.6);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        p {
+        
+        .main-love {
             font-size: 1.8rem;
             color: #fff;
+            margin-bottom: 25px;
         }
+ 
+        /* Styling for your additional messages */
+        .extra-message {
+            font-size: 1.2rem;
+            color: #ffb3c1;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.5s ease-in-out;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+        
         canvas {
             position: absolute;
             top: 0;
@@ -43,19 +61,20 @@
             height: 100%;
             pointer-events: none;
         }
-        /* Tap to open button */
+        
         #start-btn {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 35px;
+            font-size: 1.3rem;
             background: #ff4d6d;
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 0 15px rgba(255, 77, 109, 0.5);
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
             transition: 0.3s;
             z-index: 20;
         }
+        
         #start-btn:hover {
             transform: scale(1.05);
             background: #ff758f;
@@ -67,8 +86,12 @@
     <button id="start-btn" onclick="revealLove()">Open Message ❤️</button>
  
     <div id="message-box">
-        <h1>I love you Priyanka</h1>
-        <p>I love you so much</p>
+        <h1>Hey, how is it? Hope you loved it</h1>
+        <p class="main-love">I miss you so much. Jyada kachu na bola moye, bs itno kehno hai ki tu achi lagtey moye thik hai, ab jyada bhaav mat khaiyo.</p>
+        
+        <!-- EDIT YOUR ADDITIONAL MESSAGES HERE -->
+        <p class="extra-message" id="extra1">Ham chalengey ghumney kahin dur. Mmmmuuuuaaaaaahhhhhhhhhhhhh meri jaan. ✨</p>
+        <p class="extra-message" id="extra2">Tonnes of Love for You Pagal Ladki. ❤️</p>
     </div>
  
     <canvas id="heartCanvas"></canvas>
@@ -90,20 +113,19 @@
                 this.x = x;
                 this.y = y;
                 this.size = Math.random() * 15 + 10;
-                // Blast vector physics
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 8 + 4;
+                const speed = Math.random() * 10 + 5; /* Slightly faster blast */
                 this.speedX = Math.cos(angle) * speed;
                 this.speedY = Math.sin(angle) * speed;
-                this.gravity = 0.05;
+                this.gravity = 0.04;
                 this.opacity = 1;
-                this.fade = Math.random() * 0.015 + 0.01;
+                this.fade = Math.random() * 0.012 + 0.008;
             }
  
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                this.speedY += this.gravity; // slightly pull down over time
+                this.speedY += this.gravity;
                 this.opacity -= this.fade;
             }
  
@@ -112,8 +134,6 @@
                 ctx.globalAlpha = this.opacity;
                 ctx.fillStyle = '#ff4d6d';
                 ctx.translate(this.x, this.y);
-                
-                // Drawing a heart shape
                 ctx.beginPath();
                 ctx.moveTo(0, 0);
                 ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, +this.size/3, 0, this.size);
@@ -126,8 +146,7 @@
         function createBlast() {
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            // Spawn 100 hearts instantly for the explosion
-            for (let i = 0; i < 100; i++) {
+            for (let i = 0; i < 120; i++) { /* 120 hearts for a bigger blast */
                 particles.push(new HeartParticle(centerX, centerY));
             }
         }
@@ -143,24 +162,35 @@
         }
  
         function revealLove() {
-            // Hide button
             document.getElementById('start-btn').style.display = 'none';
             
-            // Show text animation
+            // Trigger the text fade-in zoom animation
             const msg = document.getElementById('message-box');
             msg.style.opacity = '1';
-            msg.style.transform = 'scale(1)';
+            msg.style.transform = 'scale(1) translateY(0)';
             
-            // Start heart blast
             createBlast();
             animate();
             
-            // Create a small extra burst every second
+            // Fade in the first extra message after 1.5 seconds
+            setTimeout(() => {
+                const ex1 = document.getElementById('extra1');
+                ex1.style.opacity = '1';
+                ex1.style.transform = 'translateY(0)';
+            }, 1500);
+ 
+            // Fade in the second extra message after 3 seconds
+            setTimeout(() => {
+                const ex2 = document.getElementById('extra2');
+                ex2.style.opacity = '1';
+                ex2.style.transform = 'translateY(0)';
+            }, 3000);
+            
             setInterval(() => {
-                if(particles.length < 50) {
+                if(particles.length < 40) {
                      createBlast();
                 }
-            }, 1200);
+            }, 1500);
         }
     </script>
 </body>
